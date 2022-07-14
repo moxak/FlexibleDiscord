@@ -1,2 +1,4 @@
 .zip
 resources/*
+node_modules/*
+src/*.js
