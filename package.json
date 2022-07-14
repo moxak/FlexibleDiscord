@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "copy": "mkdir dist && cp static/index.css dist/index.css --force && cp static/manifest.json dist/manifest.json --force",
-    "compile": "npm run copy && tsc src/content.ts --target esnext --outfile dist/index.js"
+    "compile": "npm run copy && tsc src/content.ts --target esnext --outfile dist/index.js",
+    "release": "cd dist && zip -r %npm_package_name%-%npm_package_version%.zip * && mv %npm_package_name%-%npm_package_version%.zip ../"
   },
   "repository": {
     "type": "git",
