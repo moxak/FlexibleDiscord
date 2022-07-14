@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "copy": "mkdir dist && cp static/index.css dist/index.css --force && cp static/manifest.json dist/manifest.json --force",
+    "compile": "npm run copy && tsc src/content.ts --target esnext --outfile dist/index.js"
   },
   "repository": {
     "type": "git",
