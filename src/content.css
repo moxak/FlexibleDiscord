@@ -1,0 +1,63 @@
+/* -----
+SVG Icons - svgicons.sparkk.fr
+----- */
+
+.svg-icon {
+    width: 1em;
+    height: 1em;
+    pointer-events: none;
+}
+
+.svg-icon path,
+    .svg-icon polygon,
+    .svg-icon rect {
+    fill: rgb(185,187,190);
+}
+
+.svg-icon circle {
+    stroke: rgb(185,187,190);
+    stroke-width: 1;
+}
+
+
+/* .clicked {
+    background: rgba(0, 0, 0 ,0.8);
+}
+
+.unclicked {
+    background: rgba(0, 0, 0 ,0.4);
+} */
+
+.resizer-button-container {
+    /* z-index: 10000; */
+    /* background: rgba(0, 0, 0 ,0.4); */
+    /* position: absolute; */
+    background-color: rgba(0, 0, 0 ,0);
+    color:rgba(255, 255, 255, 1);
+    width: 40px;
+    height: 40px;
+    border-radius: 5%;
+    font-size: 20px;
+    text-align: center;
+    line-height: 40px;
+}
+
+
+.resizer-button {    
+    position: relative;
+
+    font-weight: bold;
+    font-size: medium;
+    width: 5;
+    color: rgba(255, 255, 255, 0.8);
+    
+    border-radius: 5%;
+    cursor: pointer;
+    z-index: 10000;
+}
+
+.user-area {
+    bottom: 0 !important;
+    position: absolute !important;
+    width: inherit !important
+}

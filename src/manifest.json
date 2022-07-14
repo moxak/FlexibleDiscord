@@ -1,0 +1,26 @@
+{
+    "name": "FlexibleDiscord",
+    "version": "1.0.0",
+    "manifest_version": 3,
+    "description": "",
+    "content_scripts": [
+      {
+        "matches": ["https://discord.com/channels/*"],
+        "js": [
+          "content.js"
+        ],
+        "css": [
+          "content.css"
+        ],
+        "all_frames": true,
+        "run_at": "document_idle"
+      }
+  ],
+    "permissions": [
+      "tabs",
+      "activeTab",
+      "scripting",
+      "contextMenus"
+    ]
+}
+
