@@ -135,7 +135,13 @@ function displayVoiceChat(userAreaSection: HTMLElement) {
     if (isVoiceChatConnected) {
         const voiceChatContainerFloating = document.createElement("div") as HTMLDivElement;
         voiceChatContainerFloating.classList.add("voice-chat-container-floating");
+        if (document.getElementsByTagName("aside")[0] != null) {
+            voiceChatContainerFloating.style.right = "260px";
+        } else {
+            voiceChatContainerFloating.style.right = "20px";
+        }
         voiceChatContainerFloating.appendChild(voiceChat);
         document.body.appendChild(voiceChatContainerFloating);
+
     }
 };
