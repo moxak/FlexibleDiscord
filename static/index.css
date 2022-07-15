@@ -52,3 +52,18 @@ SVG Icons - svgicons.sparkk.fr
     position: absolute !important;
     width: inherit !important
 }
+
+.voice-chat-container-floating {
+    list-style: none;
+    position: fixed;
+    top: 58px;
+    /* right: 260px; */
+    right: 20px;
+    z-index: 10001;
+    opacity: 0.8;
+    width: auto;
+    height: auto;
+    padding: 10px 50px 10px 5px;
+    background-color: var(--background-secondary);
+    border-radius: 5px;
+}

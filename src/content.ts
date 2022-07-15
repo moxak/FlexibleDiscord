@@ -43,6 +43,7 @@ function insertResizer(observer: MutationObserver) {
                 target.classList.add("clicked");
                 target.classList.remove("unclicked");
                 target.innerHTML = SVG_ICON_OPEN;
+                displayVoiceChat(userAreaSection);
             } else {
                 target.classList.add("unclicked");
                 target.classList.remove("clicked");
@@ -86,4 +87,55 @@ function loadChatArea() {
     });
 }
 
+// DEVELOPMENT:  This is a temporary solution.
+function displayVoiceChat(userAreaSection: HTMLElement) {
+    let isVoiceChatConnected = false as boolean;
+    let voiceChat =  document.createElement("li") as HTMLElement;
+    const userName = userAreaSection.textContent;
+    const userAvatorURL = userAreaSection.getElementsByTagName("img")[0].getAttribute("src") as string;
+    const userID = userAvatorURL.includes("https://cdn.discordapp.com/avatars/") 
+                    ? userAvatorURL.split("/")[4]
+                    : "non-user";
+    console.log(userID);
 
+    // Notes: The voice channel element is implemented in the following way:
+    // <a role="button" ~ data-list-item-id="~" tabindex="~" aria-label="{channel_name}, {n} users">...</a>
+    // Notes: The text channel element is implemented in the following way:
+    // <a role="link" href="/channels/~" data-list-item-id="~" tabindex="~" aria-label="{channel_name}">...</a>
+    const channelsContainer = document.querySelector("ul.content-2a4AW9") as HTMLElement;
+    const channels = channelsContainer.getElementsByTagName("li") as HTMLCollectionOf<HTMLElement>;
+
+
+    for (let i = 0; i < channels.length; i++) {
+        const channel = channels[i] as HTMLElement;
+        // if participant is in the channel, this parameter is 2 otherwise it is 1.
+        if (channel.childElementCount != 2) {
+            continue;
+        }
+        console.log(channel);
+
+        // detect the channel you are in
+        const usersInVCContainer = channel.childNodes[1] as HTMLElement;
+        const usersInVC = usersInVCContainer.querySelectorAll('div[class^="userAvatar-') as NodeListOf<HTMLElement>;
+
+        // userAvatarURL = https://cdn.discordapp.com/avatars/[userID]/[resourceID].webp?size=32
+        // Avatar in VC = style="background-image: url("https://cdn.discordapp.com/avatars/[userID]/[resourceID].webp?size=28");"
+        for (let j = 0; j < usersInVC.length; j++) {
+            const user = usersInVC[j] as HTMLElement;
+            const userStyle = user.getAttribute("style") as string;
+            if ( userStyle.includes(userID) ) {
+                console.log(userStyle);
+                isVoiceChatConnected = true;
+                voiceChat = channel.cloneNode(true) as HTMLElement;
+                break;
+            }
+        }
+    }
+
+    if (isVoiceChatConnected) {
+        const voiceChatContainerFloating = document.createElement("div") as HTMLDivElement;
+        voiceChatContainerFloating.classList.add("voice-chat-container-floating");
+        voiceChatContainerFloating.appendChild(voiceChat);
+        document.body.appendChild(voiceChatContainerFloating);
+    }
+};
