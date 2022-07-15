@@ -1,4 +1,4 @@
-.zip
+*.zip
 
 resources/*
 node_modules/*
