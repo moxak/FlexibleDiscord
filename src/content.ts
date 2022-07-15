@@ -11,59 +11,68 @@ function insertResizer(observer: MutationObserver) {
     // ISSUE:  The user area section is hidden by toggling sidebars.
     userAreaSection.classList.add("user-area");
 
-    if (document.getElementById("resizer-container") != null) {
-        return;
+    if (document.getElementById("resizer-container") == null) {
+        
+        const buttonContainer = document.createElement("div") as HTMLDivElement;
+        buttonContainer.setAttribute("id", "resizer-container");
+        const buttonC = document.createElement("button") as HTMLButtonElement;
+    
+        buttonC.classList.add("resizer-button-container");
+        buttonC.classList.add("unclicked");
+        buttonC.innerHTML = SVG_ICON_CLOSE;
+    
+        buttonC.addEventListener('click', (e: MouseEvent)=> {
+    
+            const target = e.target as HTMLButtonElement;
+    
+            const servers_nav = document.getElementsByTagName("nav")[0] as HTMLElement;
+    
+            if (servers_nav.style.display == "none") {
+                servers_nav.style.display = "block";
+            } else {
+                servers_nav.style.display = "none";
+            }
+    
+            const server_nav = document.getElementsByTagName("nav")[1].parentNode as HTMLElement;
+    
+            if (server_nav.style.display == "none") {
+                server_nav.style.display = "block";
+            } else {
+                server_nav.style.display = "none";
+            }
+    
+            if (target && target.classList) {
+                if (target.classList.contains("unclicked")) {
+                    target.classList.add("clicked");
+                    target.classList.remove("unclicked");
+                    target.innerHTML = SVG_ICON_OPEN;
+                    document.getElementById("voice-chat-container-floating") ? null : displayVoiceChat(userAreaSection);
+                } else {
+                    target.classList.add("unclicked");
+                    target.classList.remove("clicked");
+                    target.innerHTML = SVG_ICON_CLOSE;
+                }
+            }
+    
+        });
+    
+        buttonContainer.appendChild(buttonC);
+        if (headerSection != null) {
+            headerSection.insertBefore(buttonContainer, headerSection.firstChild);
+        }
+       
     }
 
-    const buttonContainer = document.createElement("div") as HTMLDivElement;
-    buttonContainer.setAttribute("id", "resizer-container");
-    const buttonC = document.createElement("button") as HTMLButtonElement;
-
-    buttonC.classList.add("resizer-button-container");
-    buttonC.classList.add("unclicked");
-    buttonC.innerHTML = SVG_ICON_CLOSE;
-
-    buttonC.addEventListener('click', (e: MouseEvent)=> {
-
-        const target = e.target as HTMLButtonElement;
-
-        const servers_nav = document.getElementsByTagName("nav")[0] as HTMLElement;
-
-        if (servers_nav.style.display == "none") {
-            servers_nav.style.display = "block";
-        } else {
-            servers_nav.style.display = "none";
-        }
-
-        const server_nav = document.getElementsByTagName("nav")[1].parentNode as HTMLElement;
-
-        if (server_nav.style.display == "none") {
-            server_nav.style.display = "block";
-        } else {
-            server_nav.style.display = "none";
-        }
-
-        if (target && target.classList) {
-            if (target.classList.contains("unclicked")) {
-                target.classList.add("clicked");
-                target.classList.remove("unclicked");
-                target.innerHTML = SVG_ICON_OPEN;
-                document.getElementById("voice-chat-container-floating") ? null : displayVoiceChat(userAreaSection);
-            } else {
-                target.classList.add("unclicked");
-                target.classList.remove("clicked");
-                target.innerHTML = SVG_ICON_CLOSE;
-            }
-        }
-
-    });
-
-    buttonContainer.appendChild(buttonC);
-    headerSection.insertBefore(buttonContainer, headerSection.firstChild);
+    console.log("Inserted resizer");
+    displayVoiceChat(userAreaSection);
+    
 };
 
-function observeDOMRendering(observedNode: HTMLElement) {
-    const config = { childList : true , subtree : true };
+function observeDOMRendering(observedNode: HTMLElement, config? : MutationObserverInit) {
+    // const config = { childList : true , subtree : true };
+    if (config == null) {
+        config={ childList: true, subtree: true }
+    }
     const observer = new MutationObserver((mutaionList, observer) => {
         console.log(mutaionList, observer);
         insertResizer(observer); 
@@ -94,64 +103,86 @@ function loadChatArea() {
 }
 
 // DEVELOPMENT:  This is a temporary solution.
-function displayVoiceChat(userAreaSection: HTMLElement) {
-    let isVoiceChatConnected = false as boolean;
-    let voiceChat =  document.createElement("li") as HTMLElement;
-    const userName = userAreaSection.textContent;
-    const userAvatorURL = userAreaSection.getElementsByTagName("img")[0].getAttribute("src") as string;
-    const userID = userAvatorURL.includes("https://cdn.discordapp.com/avatars/") 
-                    ? userAvatorURL.split("/")[4]
-                    : "non-user";
-    console.log(userID);
+function displayVoiceChat(userAreaSection: HTMLElement, x=0, y=0) {
 
-    // Notes: The voice channel element is implemented in the following way:
-    // <a role="button" ~ data-list-item-id="~" tabindex="~" aria-label="{channel_name}, {n} users">...</a>
-    // Notes: The text channel element is implemented in the following way:
-    // <a role="link" href="/channels/~" data-list-item-id="~" tabindex="~" aria-label="{channel_name}">...</a>
-    const channelsContainer = document.querySelector("ul.content-2a4AW9") as HTMLElement;
-    const channels = channelsContainer.getElementsByTagName("li") as HTMLCollectionOf<HTMLElement>;
+    const voiceChatContainerFloating = document.getElementById("voice-chat-container-floating") as HTMLDivElement;
+
+    if (voiceChatContainerFloating == null) {
+
+        let isVoiceChatConnected = false as boolean;
+        let voiceChat =  document.createElement("li") as HTMLElement;
+
+        const userName = userAreaSection.textContent;
+        const userAvatorURL = userAreaSection.getElementsByTagName("img")[0].getAttribute("src") as string;
+        const userID = userAvatorURL.includes("https://cdn.discordapp.com/avatars/") 
+                        ? userAvatorURL.split("/")[4]
+                        : "non-user";
+        // console.log(userID);
+
+        // Notes: The voice channel element is implemented in the following way:
+        // <a role="button" ~ data-list-item-id="~" tabindex="~" aria-label="{channel_name}, {n} users">...</a>
+        // Notes: The text channel element is implemented in the following way:
+        // <a role="link" href="/channels/~" data-list-item-id="~" tabindex="~" aria-label="{channel_name}">...</a>
+        const channelsContainer = document.querySelector("ul.content-2a4AW9") as HTMLElement;
+        const channels = channelsContainer.getElementsByTagName("li") as HTMLCollectionOf<HTMLElement>;
 
 
-    for (let i = 0; i < channels.length; i++) {
-        const channel = channels[i] as HTMLElement;
-        // if participant is in the channel, this parameter is 2 otherwise it is 1.
-        if (channel.childElementCount != 2) {
-            continue;
-        }
-        console.log(channel);
+        for (let i = 0; i < channels.length; i++) {
+            const channel = channels[i] as HTMLElement;
+            // if participant is in the channel, this parameter is 2 otherwise it is 1.
+            if (channel.childElementCount != 2) {
+                continue;
+            }
+            // console.log(channel);
 
-        // detect the channel you are in
-        const usersInVCContainer = channel.childNodes[1] as HTMLElement;
-        const usersInVC = usersInVCContainer.querySelectorAll('div[class^="userAvatar-') as NodeListOf<HTMLElement>;
+            // detect the channel you are in
+            const usersInVCContainer = channel.childNodes[1] as HTMLElement;
+            const usersInVC = usersInVCContainer.querySelectorAll('div[class^="userAvatar-') as NodeListOf<HTMLElement>;
 
-        // userAvatarURL = https://cdn.discordapp.com/avatars/[userID]/[resourceID].webp?size=32
-        // Avatar in VC = style="background-image: url("https://cdn.discordapp.com/avatars/[userID]/[resourceID].webp?size=28");"
-        for (let j = 0; j < usersInVC.length; j++) {
-            const user = usersInVC[j] as HTMLElement;
-            const userStyle = user.getAttribute("style") as string;
-            if ( userStyle.includes(userID) ) {
-                console.log(userStyle);
-                isVoiceChatConnected = true;
-                voiceChat = channel.cloneNode(true) as HTMLElement;
-                break;
+            // userAvatarURL = https://cdn.discordapp.com/avatars/[userID]/[resourceID].webp?size=32
+            // Avatar in VC = style="background-image: url("https://cdn.discordapp.com/avatars/[userID]/[resourceID].webp?size=28");"
+            for (let j = 0; j < usersInVC.length; j++) {
+                const user = usersInVC[j] as HTMLElement;
+                const userStyle = user.getAttribute("style") as string;
+                if ( userStyle.includes(userID) ) {
+                    // console.log(userStyle);
+                    isVoiceChatConnected = true;
+                    voiceChat = channel.cloneNode(true) as HTMLElement;
+                    break;
+                }
             }
         }
+
+        if (isVoiceChatConnected) {
+            const voiceChatContainerFloating = document.createElement("div") as HTMLDivElement;
+            voiceChatContainerFloating.setAttribute("id", "voice-chat-container-floating");
+            voiceChatContainerFloating.classList.add("voice-chat-container-floating");
+            voiceChatContainerFloating.classList.add("drag-and-drop");
+
+            if (x != 0 && y != 0) {
+                voiceChatContainerFloating.style.right= x + "px";
+                voiceChatContainerFloating.style.top = y + "px";
+            } else {
+                if (document.getElementsByTagName("aside")[0] != null) {
+                    voiceChatContainerFloating.classList.add("container-floating-if-aside-visible");
+                } else {
+                    voiceChatContainerFloating.classList.add("container-floating-if-aside-invisible");
+                }
+            }
+
+            voiceChatContainerFloating.appendChild(voiceChat);
+            document.body.appendChild(voiceChatContainerFloating);
+            dragAndDrop();
+        }
+    } else {
+        voiceChatContainerFloating.remove();
+        const x_pos = voiceChatContainerFloating.style.right === '' ? 20 : parseInt(voiceChatContainerFloating.style.right);
+        const y_pos = voiceChatContainerFloating.style.top  === '' ? 58: parseInt(voiceChatContainerFloating.style.top);
+        displayVoiceChat(userAreaSection, x_pos, y_pos);
+        console.log(x_pos, y_pos);
     }
 
-    if (isVoiceChatConnected) {
-        const voiceChatContainerFloating = document.createElement("div") as HTMLDivElement;
-        voiceChatContainerFloating.setAttribute("id", "voice-chat-container-floating");
-        voiceChatContainerFloating.classList.add("voice-chat-container-floating");
-        voiceChatContainerFloating.classList.add("drag-and-drop");
-        if (document.getElementsByTagName("aside")[0] != null) {
-            voiceChatContainerFloating.classList.add("container-floating-if-aside-visible");
-        } else {
-            voiceChatContainerFloating.classList.add("container-floating-if-aside-invisible");
-        }
-        voiceChatContainerFloating.appendChild(voiceChat);
-        document.body.appendChild(voiceChatContainerFloating);
-        dragAndDrop();
-    }
+
 };
 
 function dragAndDrop (){
