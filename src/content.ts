@@ -1,4 +1,4 @@
-window.addEventListener("load", loadChatArea, false);
+window.addEventListener("load", loadChatArea, true);
 
 const SVG_ICON_OPEN = '<svg class="svg-icon" viewBox="0 0 20 20"><path fill="none" d="M11.611,10.049l-4.76-4.873c-0.303-0.31-0.297-0.804,0.012-1.105c0.309-0.304,0.803-0.293,1.105,0.012l5.306,5.433c0.304,0.31,0.296,0.805-0.012,1.105L7.83,15.928c-0.152,0.148-0.35,0.223-0.547,0.223c-0.203,0-0.406-0.08-0.559-0.236c-0.303-0.309-0.295-0.803,0.012-1.104L11.611,10.049z"></path></svg>';
 const SVG_ICON_CLOSE = '<svg class="svg-icon" viewBox="0 0 20 20"><path fill="none" d="M8.388,10.049l4.76-4.873c0.303-0.31,0.297-0.804-0.012-1.105c-0.309-0.304-0.803-0.293-1.105,0.012L6.726,9.516c-0.303,0.31-0.296,0.805,0.012,1.105l5.433,5.307c0.152,0.148,0.35,0.223,0.547,0.223c0.203,0,0.406-0.08,0.559-0.236c0.303-0.309,0.295-0.803-0.012-1.104L8.388,10.049z"></path></svg>';
@@ -11,7 +11,12 @@ function insertResizer(observer: MutationObserver) {
     // ISSUE:  The user area section is hidden by toggling sidebars.
     userAreaSection.classList.add("user-area");
 
+    if (document.getElementById("resizer-container") != null) {
+        return;
+    }
+
     const buttonContainer = document.createElement("div") as HTMLDivElement;
+    buttonContainer.setAttribute("id", "resizer-container");
     const buttonC = document.createElement("button") as HTMLButtonElement;
 
     buttonC.classList.add("resizer-button-container");
@@ -58,7 +63,7 @@ function insertResizer(observer: MutationObserver) {
 };
 
 function observeDOMRendering(observedNode: HTMLElement) {
-    const config = { childList : true };
+    const config = { childList : true , subtree : true };
     const observer = new MutationObserver((mutaionList, observer) => {
         console.log(mutaionList, observer);
         insertResizer(observer); 
@@ -73,7 +78,8 @@ function observeDOMRendering(observedNode: HTMLElement) {
 function loadChatArea() {
     const jsInitCheckTimer = setInterval(() => {
 
-        const targetNode = document.getElementsByClassName("content-1jQy2l")[0] as HTMLElement;
+        // const targetNode = document.getElementsByClassName("content-1jQy2l")[0] as HTMLElement;
+        const targetNode = document.getElementsByClassName("sidebar-1tnWFu")[0] as HTMLElement;
 
         if (targetNode != null) {
             
@@ -156,8 +162,8 @@ function dragAndDrop (){
 
     var elements = document.getElementsByClassName("drag-and-drop") as HTMLCollectionOf<HTMLElement>;
 
-    var x;
-    var y;
+    var x = 0;
+    var y = 0;
 
     
     for(var i = 0; i < elements.length; i++) {
