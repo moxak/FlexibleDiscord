@@ -2,6 +2,7 @@ window.addEventListener("load", loadChatArea, true);
 
 const SVG_ICON_OPEN = '<svg class="svg-icon" viewBox="0 0 20 20"><path fill="none" d="M11.611,10.049l-4.76-4.873c-0.303-0.31-0.297-0.804,0.012-1.105c0.309-0.304,0.803-0.293,1.105,0.012l5.306,5.433c0.304,0.31,0.296,0.805-0.012,1.105L7.83,15.928c-0.152,0.148-0.35,0.223-0.547,0.223c-0.203,0-0.406-0.08-0.559-0.236c-0.303-0.309-0.295-0.803,0.012-1.104L11.611,10.049z"></path></svg>';
 const SVG_ICON_CLOSE = '<svg class="svg-icon" viewBox="0 0 20 20"><path fill="none" d="M8.388,10.049l4.76-4.873c0.303-0.31,0.297-0.804-0.012-1.105c-0.309-0.304-0.803-0.293-1.105,0.012L6.726,9.516c-0.303,0.31-0.296,0.805,0.012,1.105l5.433,5.307c0.152,0.148,0.35,0.223,0.547,0.223c0.203,0,0.406-0.08,0.559-0.236c0.303-0.309,0.295-0.803-0.012-1.104L8.388,10.049z"></path></svg>';
+const SVG_ICON_CLOSE_CIRCLE = '<svg class="svg-icon" viewBox="0 0 20 20"><path d="M14.776,10c0,0.239-0.195,0.434-0.435,0.434H5.658c-0.239,0-0.434-0.195-0.434-0.434s0.195-0.434,0.434-0.434h8.684C14.581,9.566,14.776,9.762,14.776,10 M18.25,10c0,4.558-3.693,8.25-8.25,8.25c-4.557,0-8.25-3.691-8.25-8.25c0-4.557,3.693-8.25,8.25-8.25C14.557,1.75,18.25,5.443,18.25,10 M17.382,10c0-4.071-3.312-7.381-7.382-7.381C5.929,2.619,2.619,5.93,2.619,10c0,4.07,3.311,7.382,7.381,7.382C14.07,17.383,17.382,14.07,17.382,10"></path></svg>';
 
 function insertResizer(observer: MutationObserver) {
     const isVCFloating = document.getElementById("voice-chat-container-floating") ? true : false;
@@ -155,9 +156,12 @@ function displayVoiceChat(userAreaSection: HTMLElement, x=0, y=0) {
 
         if (isVoiceChatConnected) {
             const voiceChatContainerFloating = document.createElement("div") as HTMLDivElement;
+            voiceChat.classList.add("voice-chat-users");
             voiceChatContainerFloating.setAttribute("id", "voice-chat-container-floating");
             voiceChatContainerFloating.classList.add("voice-chat-container-floating");
             voiceChatContainerFloating.classList.add("drag-and-drop");
+
+            
 
             if (x != 0 && y != 0) {
                 voiceChatContainerFloating.style.right= x + "px";
@@ -170,7 +174,15 @@ function displayVoiceChat(userAreaSection: HTMLElement, x=0, y=0) {
                 }
             }
 
+            const closeButton = document.createElement("div") as HTMLElement;
+            closeButton.classList.add("voice-chat-close-button");
+            closeButton.innerHTML = SVG_ICON_CLOSE_CIRCLE;
+            closeButton.addEventListener("click", () => {
+                voiceChatContainerFloating.remove();
+            });
+
             voiceChatContainerFloating.appendChild(voiceChat);
+            voiceChatContainerFloating.appendChild(closeButton);
             document.body.appendChild(voiceChatContainerFloating);
             dragAndDrop();
         }

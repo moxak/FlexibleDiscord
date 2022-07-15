@@ -54,15 +54,16 @@ SVG Icons - svgicons.sparkk.fr
 }
 
 .voice-chat-container-floating {
+    display: flex;
     list-style: none;
     position: fixed;
     top: 58px;
     right: 260px;
     z-index: 10001;
     opacity: 0.8;
-    width: 250px;
+    width: 290px;
     height: auto;
-    padding: 10px 50px 10px 5px;
+    padding: 30px 10px 10px 5px;
     background-color: var(--background-secondary);
     border-radius: 5px;
 }
@@ -78,5 +79,17 @@ SVG Icons - svgicons.sparkk.fr
 .drag-and-drop {
     cursor: move;
     position: absolute;
-    z-index: 1000;
+}
+
+.voice-chat-users {
+    width: 260px;
+}
+
+.voice-chat-close-button {
+    width: 30px;
+    height: 30px;
+    font-size: xx-large;
+    text-align: center;
+    cursor: pointer;
+    z-index: 10002;
 }
