@@ -63,7 +63,7 @@ SVG Icons - svgicons.sparkk.fr
     opacity: 0.8;
     width: 290px;
     height: auto;
-    padding: 30px 10px 10px 5px;
+    padding: 20px 10px 10px 5px;
     background-color: var(--background-secondary);
     border-radius: 5px;
 }
@@ -88,7 +88,7 @@ SVG Icons - svgicons.sparkk.fr
 .voice-chat-close-button {
     width: 30px;
     height: 30px;
-    font-size: xx-large;
+    font-size: x-large;
     text-align: center;
     cursor: pointer;
     z-index: 10002;
