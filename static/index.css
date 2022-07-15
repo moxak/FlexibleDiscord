@@ -57,11 +57,26 @@ SVG Icons - svgicons.sparkk.fr
     list-style: none;
     position: fixed;
     top: 58px;
+    right: 260px;
     z-index: 10001;
     opacity: 0.8;
-    width: auto;
+    width: 250px;
     height: auto;
     padding: 10px 50px 10px 5px;
     background-color: var(--background-secondary);
     border-radius: 5px;
+}
+
+.container-floating-if-aside-visible {
+    right: 260px;
+}
+
+.container-floating-if-aside-invisible {
+    right: 20px;
+}
+
+.drag-and-drop {
+    cursor: move;
+    position: absolute;
+    z-index: 1000;
 }

@@ -43,7 +43,7 @@ function insertResizer(observer: MutationObserver) {
                 target.classList.add("clicked");
                 target.classList.remove("unclicked");
                 target.innerHTML = SVG_ICON_OPEN;
-                displayVoiceChat(userAreaSection);
+                document.getElementById("voice-chat-container-floating") ? null : displayVoiceChat(userAreaSection);
             } else {
                 target.classList.add("unclicked");
                 target.classList.remove("clicked");
@@ -134,14 +134,94 @@ function displayVoiceChat(userAreaSection: HTMLElement) {
 
     if (isVoiceChatConnected) {
         const voiceChatContainerFloating = document.createElement("div") as HTMLDivElement;
+        voiceChatContainerFloating.setAttribute("id", "voice-chat-container-floating");
         voiceChatContainerFloating.classList.add("voice-chat-container-floating");
+        voiceChatContainerFloating.classList.add("drag-and-drop");
         if (document.getElementsByTagName("aside")[0] != null) {
-            voiceChatContainerFloating.style.right = "260px";
+            voiceChatContainerFloating.classList.add("container-floating-if-aside-visible");
         } else {
-            voiceChatContainerFloating.style.right = "20px";
+            voiceChatContainerFloating.classList.add("container-floating-if-aside-invisible");
         }
         voiceChatContainerFloating.appendChild(voiceChat);
         document.body.appendChild(voiceChatContainerFloating);
+        dragAndDrop();
+    }
+};
+
+function dragAndDrop (){
+    function translateLeftToRight(leftX : number) {
+        let doucmentWidth = document.documentElement.clientWidth;
+        return (doucmentWidth - leftX);
+    }
+
+    var elements = document.getElementsByClassName("drag-and-drop") as HTMLCollectionOf<HTMLElement>;
+
+    var x;
+    var y;
+
+    
+    for(var i = 0; i < elements.length; i++) {
+        elements[i].addEventListener("mousedown", mdown, false);
+        elements[i].addEventListener("touchstart", mdown, false);
+    }
+    
+    function mdown(e) {
+        e.target.classList.add("drag");
+
+        
+        if(e.type === "mousedown") {
+            var event = e;
+        } else {
+            var event = e.changedTouches[0];
+        }
+
+        //要素内の相対座標を取得
+        x = event.pageX - e.target.offsetLeft - 300;
+        y = event.pageY - e.target.offsetTop;
+
+        document.body.addEventListener("mousemove", mmove, false);
+        document.body.addEventListener("touchmove", mmove, false);
+    }
+
+    
+    function mmove(e) {
+        
+        var drag = document.getElementsByClassName("drag")[0] as HTMLElement;
+
+    
+        if(e.type === "mousemove") {
+            var event = e;
+        } else {
+            var event = e.changedTouches[0];
+        }
+
+    
+        e.preventDefault();
+
+        drag.style.top = event.pageY - y + "px";
+        drag.style.right = translateLeftToRight(event.pageX - x) + "px";
+
+        
+        drag.addEventListener("mouseup", mup, false);
+        document.body.addEventListener("mouseleave", mup, false);
+        drag.addEventListener("touchend", mup, false);
+        document.body.addEventListener("touchleave", mup, false);
 
     }
+
+    
+    function mup(e) {
+        var drag = document.getElementsByClassName("drag")[0];
+
+        if (drag != null) {
+
+            document.body.removeEventListener("mousemove", mmove, false);
+            drag.removeEventListener("mouseup", mup, false);
+            document.body.removeEventListener("touchmove", mmove, false);
+            drag.removeEventListener("touchend", mup, false);
+
+            drag.classList.remove("drag");
+        }
+    }
+
 };
